@@ -6,34 +6,16 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  Image,
   Dimensions,
   StatusBar,
 } from 'react-native';
+import DestinationCard from '../../components/DestinationCard';
+import { destinationsData } from '../../data/destinationsData';
 
 const { width } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }: any) => {
   const [searchQuery, setSearchQuery] = useState('');
-
-  const destinations = [
-    {
-      id: 1,
-      name: 'Sumatra Utara',
-      location: 'Indonesia',
-      price: 'Rp 450.000/person',
-      image: require('../../../assets/images/danautoba1.jpg'),
-      rating: '5.0',
-    },
-    {
-      id: 2,
-      name: 'Ngawi',
-      location: 'Wakanda',
-      price: 'Rp 450.000/person',
-      image: require('../../../assets/images/Ngawi.jpg'),
-      rating: '999999',
-    },
-  ];
 
   return (
     <View style={styles.container}>
@@ -42,7 +24,7 @@ const HomeScreen = ({ navigation }: any) => {
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>Haikal</Text>
+            <Text style={styles.greeting}>Marwhal</Text>
             <View style={styles.notificationBadge}>
               <Text style={styles.badgeText}>3</Text>
             </View>
@@ -82,41 +64,30 @@ const HomeScreen = ({ navigation }: any) => {
           </View>
 
           {/* Destination Cards */}
-          {destinations.map((destination) => (
-            <TouchableOpacity
+          {destinationsData.map((destination) => (
+            <DestinationCard
               key={destination.id}
-              style={styles.card}
-              onPress={() => navigation.navigate('DestinationDetail', { destination })}
-              activeOpacity={0.9}
-            >
-              <Image
-                source={
-                  typeof destination.image === 'string'
-                    ? { uri: destination.image }
-                    : destination.image
-                }
-                style={styles.cardImage}
-                resizeMode="cover"
-              />
-              <View style={styles.cardOverlay} />
-              
-              {/* Favorite Icon */}
-              <TouchableOpacity style={styles.favoriteButton}>
-                <Text style={styles.favoriteIcon}>🤍</Text>
-              </TouchableOpacity>
-
-              {/* Card Info */}
-              <View style={styles.cardInfo}>
-                <View style={styles.cardLocation}>
-                  <Text style={styles.locationIcon}>📍</Text>
-                  <Text style={styles.cardLocationText}>{destination.name}</Text>
-                </View>
-                <View style={styles.cardPriceContainer}>
-                  <Text style={styles.cardRating}>⭐ {destination.rating}</Text>
-                  <Text style={styles.cardPrice}>{destination.price}</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
+              id={destination.id}
+              title={destination.title}
+              country={destination.country}
+              imageUrl={destination.imageUrl}
+              rating={destination.rating}
+              price={destination.price}
+              description={destination.description}
+              coordinates={destination.coordinates}
+              onPress={() =>
+                navigation.navigate('DestinationDetail', {
+                  id: destination.id,
+                  title: destination.title,
+                  country: destination.country,
+                  imageUrl: destination.imageUrl,
+                  rating: destination.rating,
+                  price: destination.price,
+                  description: destination.description,
+                  coordinates: destination.coordinates,
+                })
+              }
+            />
           ))}
         </View>
 

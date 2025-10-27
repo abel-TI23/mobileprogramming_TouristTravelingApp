@@ -277,9 +277,21 @@ const styles = StyleSheet.create({
 });
 
 const DestinationDetailScreen = ({ navigation, route }: any) => {
+  // Get params from navigation
+  const {
+    id,
+    title = 'Danau Toba',
+    country = 'Indonesia',
+    imageUrl,
+    rating = 4.8,
+    price = 450000,
+    description = 'Amazing destination',
+    coordinates,
+  } = route.params || {};
+
   const [quantity, setQuantity] = useState(1);
-  const [totalPrice, setTotalPrice] = useState(450000);
-  const basePrice = 450000; // Price in Indonesian Rupiah for Danau Toba
+  const [totalPrice, setTotalPrice] = useState(price);
+  const basePrice = price; // Price from params
 
   const incrementQuantity = () => {
     setQuantity(prev => prev + 1);
@@ -293,12 +305,12 @@ const DestinationDetailScreen = ({ navigation, route }: any) => {
 
   useEffect(() => {
     setTotalPrice(quantity * basePrice);
-  }, [quantity]);
+  }, [quantity, basePrice]);
 
   const handleBookNow = () => {
     Alert.alert(
       'Booking Confirmation',
-      `Your booking for ${quantity} person(s) to Danau Toba has been confirmed!\n\nTotal Amount: ${formatPrice(totalPrice)}\n\nThank you for choosing our service!`,
+      `Your booking for ${quantity} person(s) to ${title} has been confirmed!\n\nTotal Amount: ${formatPrice(totalPrice)}\n\nThank you for choosing our service!`,
       [
         {
           text: 'OK',
@@ -309,7 +321,7 @@ const DestinationDetailScreen = ({ navigation, route }: any) => {
   };
 
   const formatPrice = (price: number) => {
-    return `Rp ${price.toLocaleString('id-ID')}`;
+    return `$${price.toLocaleString()}`;
   };
 
   return (
@@ -317,7 +329,13 @@ const DestinationDetailScreen = ({ navigation, route }: any) => {
       <StatusBar barStyle="light-content" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <ImageBackground
-          source={require('../../../assets/images/danautoba1.jpg')}
+          source={
+            imageUrl
+              ? typeof imageUrl === 'string'
+                ? { uri: imageUrl }
+                : imageUrl
+              : require('../../../assets/images/danautoba1.jpg')
+          }
           style={styles.imageBackground}
           resizeMode="cover"
         >
@@ -346,11 +364,11 @@ const DestinationDetailScreen = ({ navigation, route }: any) => {
           <View style={styles.destinationInfo}>
             <View style={styles.rating}>
               <Text style={styles.star}>★</Text>
-              <Text style={styles.ratingText}>4.8</Text>
+              <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
             </View>
-            <Text style={styles.destinationTitle}>Danau Toba</Text>
+            <Text style={styles.destinationTitle}>{title}</Text>
             <Text style={styles.destinationSubtitle}>
-              Lake Toba is a large natural lake in North Sumatra, Indonesia occupying the caldera of a supervolcano. The lake is located in the middle of the northern part of the island of Sumatra.
+              {description}
             </Text>
           </View>
         </ImageBackground>
@@ -366,7 +384,7 @@ const DestinationDetailScreen = ({ navigation, route }: any) => {
                 resizeMode="cover"
               />
             </View>
-            <Text style={styles.countryText}>Indonesia</Text>
+            <Text style={styles.countryText}>{country}</Text>
           </View>
 
           <Text style={styles.sectionTitle}>Discover the Beauty of Danau Toba</Text>

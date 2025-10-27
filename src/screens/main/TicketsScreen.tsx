@@ -77,7 +77,11 @@ const TicketsScreen = ({ navigation }: any) => {
         </View>
 
         {/* Tabs */}
-        <View style={styles.tabsContainer}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabsContainer}
+        >
           {tabs.map((tab) => (
             <TouchableOpacity
               key={tab}
@@ -97,7 +101,7 @@ const TicketsScreen = ({ navigation }: any) => {
               </Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </ScrollView>
 
         {/* Calendar */}
         <View style={styles.calendarContainer}>
@@ -234,7 +238,6 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   tabsContainer: {
-    flexDirection: 'row',
     paddingHorizontal: 20,
     marginBottom: 20,
     gap: 10,
@@ -244,6 +247,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
     backgroundColor: '#F5F5F5',
+    marginRight: 10,
   },
   tabActive: {
     backgroundColor: '#FF6B4A',

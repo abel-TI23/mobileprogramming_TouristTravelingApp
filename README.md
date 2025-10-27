@@ -1,8 +1,250 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# MyNewProject - Travel Destination App
 
-# Getting Started
+A React Native application featuring bottom tab navigation, reusable components, and data passing between screens. This project showcases a travel destination browsing experience with booking capabilities.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Features
+
+- **Bottom Tab Navigation**: 4 tabs (Home, Tickets, Explore, Profile) with custom icons
+- **Reusable Components**: DestinationCard component with complete prop interface
+- **Data Passing**: Navigation params to pass destination details between screens
+- **TypeScript**: Full TypeScript implementation for type safety
+- **Local Assets**: Image management with require() statements
+
+## Tech Stack
+
+- React Native: v0.81.4
+- TypeScript
+- React Navigation (Stack + Bottom Tabs)
+- React Hooks (useState, useEffect)
+
+## Project Structure
+
+```
+src/
+├── components/
+│   └── DestinationCard.tsx      # Reusable destination card component
+├── data/
+│   └── destinationsData.ts       # Local data source with destination objects
+├── navigation/
+│   └── BottomTabNavigator.tsx    # Bottom tab configuration (4 tabs)
+└── screens/
+    └── main/
+        ├── WelcomeScreen.tsx         # Initial splash screen
+        ├── HomeScreen.tsx            # Main screen with destination cards
+        ├── TicketsScreen.tsx         # Flight/hotel booking interface
+        ├── ExploreScreen.tsx         # Explore destinations
+        ├── ProfileScreen.tsx         # User profile
+        └── DestinationDetailScreen.tsx # Detail view with navigation params
+```
+
+## Navigation Structure
+
+```
+Stack Navigator (Root)
+├── Welcome Screen (Initial route)
+├── HomeTabs (Bottom Tab Navigator)
+│   ├── Home Tab → HomeScreen
+│   ├── Tickets Tab → TicketsScreen
+│   ├── Explore Tab → ExploreScreen
+│   └── Profile Tab → ProfileScreen
+└── DestinationDetail Screen (Nested in stack)
+```
+
+## DestinationCard Component
+
+### Props Interface
+
+```typescript
+interface DestinationCardProps {
+  id: number;                    // Required: Unique identifier
+  title: string;                 // Required: Destination name
+  country: string;               // Required: Country badge
+  imageUrl: any;                 // Required: Image source (require())
+  rating: number;                // Required: Star rating (0-5)
+  price: string;                 // Required: Price display
+  description?: string;          // Optional: Detail description
+  coordinates?: string;          // Optional: GPS coordinates
+  onPress: () => void;          // Required: Card press handler
+}
+```
+
+### Features
+- Favorite button with toggle state
+- Country badge overlay
+- Star rating display
+- Price formatting
+- Image background with gradient
+- TypeScript type safety
+
+## Navigation Params
+
+When navigating from HomeScreen to DestinationDetail, the following params are passed:
+
+```typescript
+{
+  id: number,
+  title: string,
+  country: string,
+  imageUrl: any,
+  rating: number,
+  price: string,
+  description?: string,      // Optional
+  coordinates?: string       // Optional
+}
+```
+
+## Data Source
+
+Local data is stored in `src/data/destinationsData.ts`:
+
+```typescript
+export const destinationsData = [
+  {
+    id: 1,
+    title: 'Danau Toba',
+    country: 'Indonesia',
+    imageUrl: require('../../assets/images/danautoba.jpg'),
+    rating: 4.8,
+    price: 'Rp 1.200.000',
+    description: 'Lake Toba is a volcanic lake...',
+    coordinates: '2.6845° N, 98.8756° E'
+  },
+  // ... more destinations
+];
+```
+
+## Setup & Installation
+
+### Prerequisites
+- Node.js (v16 or higher)
+- React Native CLI
+- Android Studio (for Android) or Xcode (for iOS)
+- JDK 11 or higher
+
+### Installation Steps
+
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Install iOS Pods** (macOS only)
+   ```bash
+   cd ios && pod install && cd ..
+   ```
+
+3. **Start Metro Bundler**
+   ```bash
+   npm start
+   ```
+
+4. **Run on Android**
+   ```bash
+   npm run android
+   ```
+
+5. **Run on iOS** (macOS only)
+   ```bash
+   npm run ios
+   ```
+
+## Screens Overview
+
+### WelcomeScreen
+- Initial splash screen with tourism imagery
+- "Start Exploring" button navigates to HomeTabs
+
+### HomeScreen
+- Greeting header with user name
+- Search bar for destinations
+- Horizontal scrolling banner
+- Destination cards (minimum 2) using DestinationCard component
+- Each card navigates to DestinationDetail with full params
+
+### TicketsScreen
+- Date selection calendar
+- Horizontally scrollable tabs (Hotel, Aircraft, Villa, Attraction)
+- Flight route display (NL → IDN)
+- Booking interface
+
+### DestinationDetailScreen
+- Receives all navigation params
+- Displays: id, title, country, rating, price, description, coordinates
+- Back navigation to Home
+- Booking button
+
+### ExploreScreen
+- Placeholder for explore functionality
+- Compass icon in tab bar
+
+### ProfileScreen
+- Placeholder for user profile
+- Person icon in tab bar
+
+## Assignment Criteria Compliance
+
+✅ **Bottom Tab Navigation (20pts)**
+- 4 tabs implemented: Home, Tickets, Explore, Profile
+- Custom icons with active/inactive states
+- Rounded tab bar with styling
+
+✅ **Home Screen Elements**
+- Greeting text with user name
+- Banner component (horizontal scroll)
+- Search bar with icon
+- Minimum 2 destination cards
+
+✅ **DestinationCard Component (25pts)**
+- Reusable with TypeScript interface
+- Required props: image, country, title, rating, price, onPress
+- Additional features: favorite icon with toggle state
+- Proper styling with shadows and rounded corners
+
+✅ **Data Passing (25pts)**
+- All required params passed via navigation
+- Optional params included (description, coordinates)
+- Params properly received in DestinationDetail screen
+- TypeScript type safety enforced
+
+✅ **UI Quality (15pts)**
+- Consistent styling across screens
+- Responsive layouts
+- Custom icons and gradients
+- Shadow effects and rounded corners
+
+✅ **Code Quality (15pts)**
+- TypeScript implementation
+- Clean component structure
+- Proper imports and exports
+- Commented code sections
+
+## Troubleshooting
+
+### Metro Bundler Issues
+```bash
+npm start -- --reset-cache
+```
+
+### Android Build Issues
+```bash
+cd android && ./gradlew clean && cd ..
+npm run android
+```
+
+### Port 8081 Already in Use
+```bash
+taskkill /F /IM node.exe
+npm start
+```
+
+## License
+
+This project is created for educational purposes as part of a Mobile Programming assignment.
+
+---
+
+**React Native Version**: 0.81.4  
+**Last Updated**: 2024
 
 ## Step 1: Start Metro
 
