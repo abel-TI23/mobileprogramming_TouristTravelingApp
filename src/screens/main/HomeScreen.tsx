@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,12 +10,30 @@ import {
   StatusBar,
 } from 'react-native';
 import DestinationCard from '../../components/DestinationCard';
-import { destinationsData } from '../../data/destinationsData';
+import { fetchDestinations, Destination } from '../../data/destinationsData';
 
 const { width } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }: any) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      setLoading(true);
+      const list = await fetchDestinations();
+      if (mounted) {
+        setDestinations(list);
+        setLoading(false);
+      }
+    };
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -64,31 +82,35 @@ const HomeScreen = ({ navigation }: any) => {
           </View>
 
           {/* Destination Cards */}
-          {destinationsData.map((destination) => (
-            <DestinationCard
-              key={destination.id}
-              id={destination.id}
-              title={destination.title}
-              country={destination.country}
-              imageUrl={destination.imageUrl}
-              rating={destination.rating}
-              price={destination.price}
-              description={destination.description}
-              coordinates={destination.coordinates}
-              onPress={() =>
-                navigation.navigate('DestinationDetail', {
-                  id: destination.id,
-                  title: destination.title,
-                  country: destination.country,
-                  imageUrl: destination.imageUrl,
-                  rating: destination.rating,
-                  price: destination.price,
-                  description: destination.description,
-                  coordinates: destination.coordinates,
-                })
-              }
-            />
-          ))}
+          {loading ? (
+            <Text style={{ paddingHorizontal: 20 }}>Loading destinations...</Text>
+          ) : (
+            destinations.map((destination) => (
+              <DestinationCard
+                key={destination.id}
+                id={destination.id}
+                title={destination.title}
+                country={destination.country}
+                imageUrl={destination.imageUrl}
+                rating={destination.rating}
+                price={destination.price}
+                description={destination.description}
+                coordinates={destination.coordinates}
+                onPress={() =>
+                  navigation.navigate('DestinationDetail', {
+                    id: destination.id,
+                    title: destination.title,
+                    country: destination.country,
+                    imageUrl: destination.imageUrl,
+                    rating: destination.rating,
+                    price: destination.price,
+                    description: destination.description,
+                    coordinates: destination.coordinates,
+                  })
+                }
+              />
+            ))
+          )}
         </View>
 
         <View style={{ height: 100 }} />

@@ -11,6 +11,7 @@ import {
   Image,
   Alert
 } from 'react-native';
+import { fetchDestinationById, Destination } from '../../data/destinationsData';
 
 const { width, height } = Dimensions.get('window');
 
@@ -278,20 +279,14 @@ const styles = StyleSheet.create({
 
 const DestinationDetailScreen = ({ navigation, route }: any) => {
   // Get params from navigation
-  const {
-    id,
-    title = 'Danau Toba',
-    country = 'Indonesia',
-    imageUrl,
-    rating = 4.8,
-    price = 450000,
-    description = 'Amazing destination',
-    coordinates,
-  } = route.params || {};
+  const params = route.params || {};
+  const routeId = params.id;
+
+  const [destination, setDestination] = useState<Destination | null>(null);
+  const [loadingDest, setLoadingDest] = useState<boolean>(true);
 
   const [quantity, setQuantity] = useState(1);
-  const [totalPrice, setTotalPrice] = useState(price);
-  const basePrice = price; // Price from params
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const incrementQuantity = () => {
     setQuantity(prev => prev + 1);
@@ -304,13 +299,79 @@ const DestinationDetailScreen = ({ navigation, route }: any) => {
   };
 
   useEffect(() => {
-    setTotalPrice(quantity * basePrice);
-  }, [quantity, basePrice]);
+    const base = destination ? destination.price : 450000;
+    setTotalPrice(quantity * base);
+  }, [quantity, destination]);
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      if (!routeId) {
+        // No id supplied: build from params
+        const fallback: Destination = {
+          id: String(params.id ?? ''),
+          title: params.title ?? 'Danau Toba',
+          country: params.country ?? 'Indonesia',
+          imageUrl: params.imageUrl ?? require('../../../assets/images/danautoba1.jpg'),
+          rating: Number(params.rating) || 4.8,
+          price: Number(params.price) || 450000,
+          description: params.description ?? 'Amazing destination',
+          coordinates: params.coordinates,
+        };
+        if (mounted) {
+          setDestination(fallback);
+          setLoadingDest(false);
+        }
+        return;
+      }
+
+      setLoadingDest(true);
+      try {
+        const d = await fetchDestinationById(String(routeId));
+        if (mounted) {
+          if (d) setDestination(d);
+          else {
+            // fallback to params if API returned nothing
+            setDestination({
+              id: String(params.id ?? ''),
+              title: params.title ?? 'Danau Toba',
+              country: params.country ?? 'Indonesia',
+              imageUrl: params.imageUrl ?? require('../../../assets/images/danautoba1.jpg'),
+              rating: Number(params.rating) || 4.8,
+              price: Number(params.price) || 450000,
+              description: params.description ?? 'Amazing destination',
+              coordinates: params.coordinates,
+            });
+          }
+        }
+      } catch (e) {
+        console.error('[DestinationDetailScreen] fetch error', e);
+        if (mounted) {
+          setDestination({
+            id: String(params.id ?? ''),
+            title: params.title ?? 'Danau Toba',
+            country: params.country ?? 'Indonesia',
+            imageUrl: params.imageUrl ?? require('../../../assets/images/danautoba1.jpg'),
+            rating: Number(params.rating) || 4.8,
+            price: Number(params.price) || 450000,
+            description: params.description ?? 'Amazing destination',
+            coordinates: params.coordinates,
+          });
+        }
+      } finally {
+        if (mounted) setLoadingDest(false);
+      }
+    };
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, [routeId]);
 
   const handleBookNow = () => {
     Alert.alert(
       'Booking Confirmation',
-      `Your booking for ${quantity} person(s) to ${title} has been confirmed!\n\nTotal Amount: ${formatPrice(totalPrice)}\n\nThank you for choosing our service!`,
+      `Your booking for ${quantity} person(s) to ${destination?.title ?? 'the destination'} has been confirmed!\n\nTotal Amount: ${formatPrice(totalPrice)}\n\nThank you for choosing our service!`,
       [
         {
           text: 'OK',
@@ -330,10 +391,10 @@ const DestinationDetailScreen = ({ navigation, route }: any) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <ImageBackground
           source={
-            imageUrl
-              ? typeof imageUrl === 'string'
-                ? { uri: imageUrl }
-                : imageUrl
+            destination && destination.imageUrl
+              ? typeof destination.imageUrl === 'string'
+                ? { uri: destination.imageUrl }
+                : destination.imageUrl
               : require('../../../assets/images/danautoba1.jpg')
           }
           style={styles.imageBackground}
@@ -364,11 +425,11 @@ const DestinationDetailScreen = ({ navigation, route }: any) => {
           <View style={styles.destinationInfo}>
             <View style={styles.rating}>
               <Text style={styles.star}>★</Text>
-              <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
+              <Text style={styles.ratingText}>{(destination?.rating ?? 0).toFixed(1)}</Text>
             </View>
-            <Text style={styles.destinationTitle}>{title}</Text>
+            <Text style={styles.destinationTitle}>{destination?.title ?? 'Danau Toba'}</Text>
             <Text style={styles.destinationSubtitle}>
-              {description}
+              {destination?.description ?? 'Amazing destination'}
             </Text>
           </View>
         </ImageBackground>
@@ -384,7 +445,7 @@ const DestinationDetailScreen = ({ navigation, route }: any) => {
                 resizeMode="cover"
               />
             </View>
-            <Text style={styles.countryText}>{country}</Text>
+            <Text style={styles.countryText}>{destination?.country ?? 'Indonesia'}</Text>
           </View>
 
           <Text style={styles.sectionTitle}>Discover the Beauty of Danau Toba</Text>

@@ -148,6 +148,16 @@ export const destinationsData = [
    npm run ios
    ```
 
+### Mock API (MockAPI.io)
+
+This project is configured to use a hosted MockAPI.io endpoint. Set the
+base URL in `src/config/api.ts` (the file is preconfigured with your
+MockAPI.io project) so the app requests go to `${API_BASE_URL}/destinations`.
+
+If you previously used a local json-server, you can now rely on your
+hosted MockAPI project instead. The app still falls back to bundled local
+data if the network request fails.
+
 ## Screens Overview
 
 ### WelcomeScreen

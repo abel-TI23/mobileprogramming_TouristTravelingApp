@@ -1,0 +1,44 @@
+{
+  "destinations": [
+    {
+      "id": "1",
+      "title": "Labuan Bajo",
+      "country": "Indonesia",
+      "imageUrl": "https://picsum.photos/seed/labuan/800/600",
+      "rating": 5.0,
+      "price": 4000,
+      "description": "Labuan Bajo is a fishing town located at the western end of Flores. Home to Komodo Dragons and stunning beaches.",
+      "coordinates": { "lat": -8.4963, "lng": 119.8889 }
+    },
+    {
+      "id": "2",
+      "title": "Danau Toba",
+      "country": "Indonesia",
+      "imageUrl": "https://picsum.photos/seed/toba/800/600",
+      "rating": 4.8,
+      "price": 3500,
+      "description": "Lake Toba is a large volcanic lake in North Sumatra. Experience magnificent views and Batak culture.",
+      "coordinates": { "lat": 2.6845, "lng": 98.8756 }
+    },
+    {
+      "id": "3",
+      "title": "Samosir Island",
+      "country": "Indonesia",
+      "imageUrl": "https://picsum.photos/seed/samosir/800/600",
+      "rating": 4.7,
+      "price": 2500,
+      "description": "Samosir Island sits within Lake Toba and offers traditional villages and scenic highlands.",
+      "coordinates": { "lat": 2.6575, "lng": 98.8145 }
+    },
+    {
+      "id": "4",
+      "title": "Ngawi",
+      "country": "Indonesia",
+      "imageUrl": "https://picsum.photos/seed/ngawi/800/600",
+      "rating": 4.6,
+      "price": 5500,
+      "description": "Ngawi is a regency in East Java, known for its landscapes and culture.",
+      "coordinates": { "lat": -7.432, "lng": 111.423 }
+    }
+  ]
+}
